@@ -10,6 +10,9 @@
     <body>
         <div class="left-half">
             <p>コンソール</p>
+            <h1 style="padding: 10px; margin-bottom: 10px; border: 1px dotted #333333;" id="Console_Log"> コマンドを入力してね</h1>
+            <input type="text" name="name" id="Console_command"></p>
+            <button id="simpleButton">コマンドを実行</button>
         </div>
           <div class="right-container">
             <div class="right-top">
@@ -90,7 +93,7 @@
                 }
                 };
             // GETリクエストの送信先URLを指定
-            var url = 'http://126.55.95.146:8080/use_rate';
+            var url = 'http://localhost:8080/use_rate';
 
             // GETリクエストの設定
             xhr.open('GET', url, true);
@@ -108,13 +111,14 @@
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     // 取得したデータをコンソールに表示
                     var info_list=xhr.responseText.split(" ");
-                    CPU_Element.textContent="CPU:"+info_list[0];
-                    Mem_Element.textContent="メモリ:"+info_list[1];
-                    Storage.textContent="ストレージ:"+info_list[2];
+                    console.log(info_list)
+                    CPU_Element.textContent="CPU:"+info_list.slice(0, 7);
+                    Mem_Element.textContent="メモリ:"+info_list[7]+"GB";
+                    Storage.textContent="ストレージ:"+info_list[8]+"GB";
                 }
                 };
             // GETリクエストの送信先URLを指定
-            var url = 'http://126.55.95.146:8080/PC_info';
+            var url = 'http://localhost:8080/PC_info';
 
             // GETリクエストの設定
             xhr.open('GET', url, true);
@@ -122,6 +126,21 @@
             xhr.send();
             }
             PC_info_GETRequest();
+            const simpleButton = document.getElementById('simpleButton');
+            simpleButton.addEventListener('click', () => {
+                var xhr = new XMLHttpRequest();
+                let command = document.getElementById('Console_command');
+                var Console_Log = document.getElementById('Console_Log');
+                xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseText)
+                    Console_Log.textContent=xhr.responseText;
+                }
+                };
+                var url = 'http://localhost:8080/console_command/?command='+command.value;
+                xhr.open('GET', url, true);
+                xhr.send();
+            });
         </script>
     </body>
 </html>
